@@ -1,52 +1,39 @@
-import os
-from selene import browser as b, have, be, command
-from faker import Faker
-
-fake = Faker()
+from selene import have
+from qa_guru_lesson_10.pages.registration_pages import RegistrationPage
+from qa_guru_lesson_10.resource import first_name, last_name, user_email, full_name
 
 
 def test_registration_page():
-    b.open('/automation-practice-form')
-    first_name, last_name = [i for i in fake.name().split()]
+    registration_page = RegistrationPage()
+    registration_page.open_page()
 
-    b.element('#firstName').should(be.blank).type(first_name)
-    b.element('#lastName').should(be.blank).type(last_name)
-    user_email = fake.email()
-    b.element('#userEmail').should(be.blank).type(user_email)
-    b.element('label[for="gender-radio-1"]').click()
-    b.element('#userNumber').should(be.blank).type('9878763524')
-    b.element('#dateOfBirthInput').click()
-    b.element('[class="react-datepicker__month-select"]').click()
-    b.element('[value="4"]').click()
-    b.element('[class="react-datepicker__year-select"]').click()
-    b.element('[value="1996"]').click()
-    b.element('[class="react-datepicker__day react-datepicker__day--008"]').click()
-    b.element('#subjectsInput').should(be.blank).type('Math').press_enter()
-    for i in range(3):
-        b.element(f'label[for="hobbies-checkbox-{i + 1}"]').click()
-    b.element('#uploadPicture').send_keys(os.path.abspath('picture/Cat.jpeg'))
-    b.element('#currentAddress').should(be.blank).type('996 William Rapid, New Gregoryton, UT 78395')
-    b.element('#state').perform(command.js.scroll_into_view)
-    b.element('#state').click()
-    b.element('#react-select-3-option-1').click()
-    b.element('#city').click()
-    b.element('#react-select-4-option-1').click()
-    b.element('#submit').perform(command.js.click)
+    registration_page.fill_first_name(first_name=first_name)
+    registration_page.fill_last_name(last_name=last_name)
+    registration_page.fill_user_email(email=user_email)
+    registration_page.set_gender(gender='Male')
+    registration_page.fill_user_number(value='9878767564')
+    registration_page.fill_date_of_birth('08', 'May', '1996')
+    registration_page.fill_subjects(value='Maths')
+    registration_page.set_hobbies(hobby='Sports')
+    registration_page.upload_picture('Cat.jpeg')
+    registration_page.fill_current_address('996 William Rapid, New Gregoryton, UT 78395')
+    registration_page.fill_state(value='Uttar Pradesh')
+    registration_page.fill_city(value='Lucknow')
 
-    b.element('#example-modal-sizes-title-lg').should(have.exact_text('Thanks for submitting the form'))
-    name = first_name + ' ' + last_name
-    b.element('.table').all('td').even.should(
+    registration_page.press_submit()
+
+    registration_page.check_for_gratitude()
+    registration_page.should_registered_user_with.should(
         have.exact_texts(
-            name,
+            full_name,
             user_email,
             'Male',
-            '9878763524',
+            '9878767564',
             '08 May,1996',
             'Maths',
-            'Sports, Reading, Music',
+            'Sports',
             'Cat.jpeg',
             '996 William Rapid, New Gregoryton, UT 78395',
-            'Uttar Pradesh Lucknow',
+            'Uttar Pradesh Lucknow'
         )
     )
-    b.element('#closeLargeModal').click()
