@@ -1,6 +1,6 @@
-import os
-
+from os import path as p
 from selene import browser as b, have, be
+from tests.conftest import way_to_dir
 
 
 class RegistrationPage:
@@ -38,7 +38,8 @@ class RegistrationPage:
         b.all('[for^= hobbies]').element_by(have.text(hobby)).element('..').click()
 
     def upload_picture(self, value):
-        b.element('#uploadPicture').send_keys(os.path.abspath(f'picture/{value}'))
+        b.element('#uploadPicture').send_keys(
+            p.abspath(p.join(way_to_dir, p.join('picture', f'{value}'))))
 
     def fill_current_address(self, address):
         b.element('#currentAddress').should(be.blank).type(address)
