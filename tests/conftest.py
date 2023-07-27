@@ -1,5 +1,11 @@
 import pytest
 from selene import browser as b
+from os import path as p
+
+
+@pytest.fixture(scope='function', autouse=False)
+def way_to_dir():
+    return p.dirname(__file__)
 
 
 @pytest.fixture(scope='function', autouse=True)
