@@ -1,8 +1,8 @@
-import os
-
 from selene import browser as b, have, be
 from models.user import User
 from qa_guru_lesson_10.resource import full_name, user_email
+from os import path as p
+from tests.conftest import way_to_dir
 
 
 class RegistrationPage:
@@ -29,7 +29,7 @@ class RegistrationPage:
         self.fill_date_of_birth(user.date_of_birth[0], user.date_of_birth[1], user.date_of_birth[2])
         self.subjects.should(be.blank).type(user.subjects).press_enter()
         self.hobbies.element_by(have.text(user.hobbies)).element('..').click()
-        self.upload_picture.send_keys(os.path.abspath(f'picture/{user.picture}'))
+        self.upload_picture.send_keys(p.abspath(p.join(way_to_dir, p.join('picture', f'{user.picture}'))))
         self.current_address.should(be.blank).type(user.current_address)
         self.fill_state(user.state)
         self.fill_city(user.city)

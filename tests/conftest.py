@@ -1,5 +1,6 @@
 import pytest
 from selene import browser as b
+from os import path as p
 
 
 @pytest.fixture(scope='function', autouse=True)
@@ -11,3 +12,6 @@ def browser_management():
     yield
 
     b.quit()
+
+
+way_to_dir = p.dirname(__file__)
